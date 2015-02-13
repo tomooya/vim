@@ -42,6 +42,15 @@ NeoBundle 'davidhalter/jedi-vim'
 " syntastic
 "NeoBundle 'scrooloose/syntastic'
 
+" English Dictionary
+" sudo apt-get install lynx
+" sudo vi /etc/lynx-cur/lynx.cfg
+" change-> CHARACTER_SET:utf-8
+" change-> PREFERRED_LANGUAGE:ja
+NeoBundle 'thinca/vim-ref'
+NeoBundle 'mfumi/ref-dicts-en'
+NeoBundle 'tyru/vim-altercmd'
+
 " DO NeoBundleInstall
 " DO NeoBundleUpdate
 " DO NeoBundleClean 
@@ -57,6 +66,53 @@ let g:quickrun_config = {
 
 "pyflake
 let g:PyFlakeDisableMessages = "E113"
+
+" English Dictionary
+autocmd FileType ref-* nnoremap <buffer> <silent> q :<C-u>close<CR>
+
+" 辞書定義
+let g:ref_source_webdict_sites = {
+\   'je': {
+\     'url': 'http://dictionary.infoseek.ne.jp/jeword/%s',
+\   },
+\   'ej': {
+\     'url': 'http://dictionary.infoseek.ne.jp/ejword/%s',
+\   },
+\   'weblio': {
+\     'url': 'http://ejje.weblio.jp/content/%s',
+\     'keyword_encoding': 'utf-8',
+\     'cache': 1,
+\   },
+\   'wiki': {
+\     'url': 'http://ja.wikipedia.org/wiki/%s',
+\   }
+\ }
+
+" デフォルトサイト
+"let g:ref_source_webdict_sites.default = 'ej'
+" 出力に対するフィルタ
+" 最初の数行を削除
+function! g:ref_source_webdict_sites.je.filter(output)
+  return join(split(a:output, "\n")[15 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.ej.filter(output)
+  return join(split(a:output, "\n")[15 :], "\n")
+endfunction
+
+" デフォルトサイト
+let g:ref_source_webdict_sites.default = 'weblio'
+function! g:ref_source_webdict_sites.weblio.filter(output)
+	return join(split(a:output, "\n")[53 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.wiki.filter(output)
+	return join(split(a:output, "\n")[17 :], "\n")
+endfunction
+
+call altercmd#load()
+CAlterCommand ej Ref webdict ej
+CAlterCommand je Ref webdict je
+CAlterCommand dict Ref webdict weblio
+CAlterCommand wiki Ref webdict wiki
 
 filetype plugin indent on       " restore filetype
 
