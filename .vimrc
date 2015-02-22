@@ -134,6 +134,7 @@ set number
 set ic
 set showmatch
 set nowrap
+set background=dark
 
 "---higly recommended-----------------------------
 "コマンドライン補完を便利に
